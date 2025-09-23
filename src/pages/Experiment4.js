@@ -1,0 +1,111 @@
+import React, { useMemo, useState } from 'react';
+
+const initialProducts = [
+  { id: 'p1', name: 'Compact - Toyota Corolla', price: 45, image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=800&auto=format&fit=crop' },
+  { id: 'p2', name: 'SUV - Jeep Wrangler', price: 80, image: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=800&auto=format&fit=crop' },
+  { id: 'p3', name: 'EV - Tesla Model 3', price: 120, image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=800&auto=format&fit=crop' }
+];
+
+function Experiment4() {
+  const [cartItems, setCartItems] = useState([]); // {id, name, price, qty}
+
+  function addToCart(product) {
+    setCartItems((items) => {
+      const existing = items.find((it) => it.id === product.id);
+      if (existing) {
+        return items.map((it) => (it.id === product.id ? { ...it, qty: it.qty + 1 } : it));
+      }
+      return [...items, { id: product.id, name: product.name, price: product.price, qty: 1 }];
+    });
+  }
+
+  function decrement(productId) {
+    setCartItems((items) => items
+      .map((it) => (it.id === productId ? { ...it, qty: it.qty - 1 } : it))
+      .filter((it) => it.qty > 0));
+  }
+
+  function increment(productId) {
+    setCartItems((items) => items.map((it) => (it.id === productId ? { ...it, qty: it.qty + 1 } : it)));
+  }
+
+  function removeItem(productId) {
+    setCartItems((items) => items.filter((it) => it.id !== productId));
+  }
+
+  function clearCart() {
+    setCartItems([]);
+  }
+
+  const totals = useMemo(() => {
+    const subtotal = cartItems.reduce((sum, it) => sum + it.price * it.qty, 0);
+    const tax = +(subtotal * 0.1).toFixed(2);
+    const total = +(subtotal + tax).toFixed(2);
+    return { subtotal, tax, total };
+  }, [cartItems]);
+
+  return (
+    <main className="container" style={{ padding: 24 }}>
+      <h2>Experiment 4: Cart</h2>
+      <div className="cart">
+        <section className="cart__products">
+          <h3>Cars</h3>
+          <div className="cart__grid">
+            {initialProducts.map((p) => (
+              <div key={p.id} className="product">
+                <img className="product__image" src={p.image} alt={p.name} />
+                <div className="product__body">
+                  <div className="product__name">{p.name}</div>
+                  <div className="product__footer">
+                    <span className="product__price">${p.price}/day</span>
+                    <button className="btn btn--secondary" onClick={() => addToCart(p)}>Add</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <aside className="cart__sidebar">
+          <h3>Your Cart</h3>
+          {cartItems.length === 0 ? (
+            <p>No items yet.</p>
+          ) : (
+            <>
+              <ul className="cart__list">
+                {cartItems.map((it) => (
+                  <li key={it.id} className="cart__item">
+                    <div className="cart__itemInfo">
+                      <strong>{it.name}</strong>
+                      <span>${it.price}/day</span>
+                    </div>
+                    <div className="cart__qty">
+                      <button className="qty__btn" onClick={() => decrement(it.id)}>-</button>
+                      <span className="qty__value">{it.qty}</span>
+                      <button className="qty__btn" onClick={() => increment(it.id)}>+</button>
+                    </div>
+                    <div className="cart__itemTotal">${(it.price * it.qty).toFixed(2)}</div>
+                    <button className="cart__remove" onClick={() => removeItem(it.id)}>×</button>
+                  </li>
+                ))}
+              </ul>
+              <div className="cart__totals">
+                <div className="cart__row"><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+                <div className="cart__row"><span>Tax (10%)</span><strong>${totals.tax.toFixed(2)}</strong></div>
+                <div className="cart__row cart__row--total"><span>Total</span><strong>${totals.total.toFixed(2)}</strong></div>
+                <div className="cart__actions">
+                  <button className="btn" onClick={clearCart}>Clear Cart</button>
+                  <button className="btn btn--primary">Checkout</button>
+                </div>
+              </div>
+            </>
+          )}
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+export default Experiment4;
+
+
