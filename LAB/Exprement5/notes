@@ -1,0 +1,52 @@
+AIM:
+
+      To Build a simple counter application that increments or decrements a value based on user input.
+
+DESCRIPTION:
+
+      This project is a simple React Counter Application that allows users to increment or decrement a value interactively. 
+      The application uses React’s state management (useState) to keep track of the current counter value. Users can click “Increment” 
+      to increase the count or “Decrement” to decrease it, with the UI updating in real-time. The app demonstrates dynamic rendering, 
+      event handling, and state updates in React, providing a simple yet practical example of how user input can control component behavior.
+
+CODE:
+
+      import React, { useState } from 'react';
+      
+      function Experiment5() {
+        const [value, setValue] = useState(0);
+        const [step, setStep] = useState(1);
+      
+        function toInt(input) {
+          const n = parseInt(input, 10);
+          return Number.isNaN(n) ? 0 : n;
+        }
+      
+        function inc() { setValue((v) => v + toInt(step)); }
+        function dec() { setValue((v) => v - toInt(step)); }
+        function reset() { setValue(0); setStep(1); }
+      
+        return (
+          <main className="container" style={{ padding: 24 }}>
+            <h2>Experiment 5: Counter</h2>
+            <div className="counter">
+              <div className="counter__display">{value}</div>
+              <div className="counter__controls">
+                <button className="btn" onClick={dec}>-</button>
+                <button className="btn btn--primary" onClick={inc}>+</button>
+              </div>
+              <div className="counter__step">
+                <label className="form__label">Step</label>
+                <input className="form__input" type="number" value={step} onChange={(e) => setStep(e.target.value)} />
+              </div>
+              <button className="btn" onClick={reset}>Reset</button>
+            </div>
+          </main>
+        );
+      }
+      
+      export default Experiment5;
+
+RESULT:
+
+      Thus a simple counter application that increments or decrements a value based on user input created successfully.
